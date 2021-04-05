@@ -25,28 +25,28 @@ previous: ◀◀ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ here...  &nbsp;&nbsp;&nbsp;&nbs
 
 - #### 강의 일정 계획
 
-| Date  | Contents                                 | Pratice |  HR  |
-| :---: | :--------------------------------------- | ------- | :--: |
-| Day01 | Python Review<br />Web App Demonstration |         |  3   |
-| Day02 |                                          |         |  3   |
-| Day03 |                                          |         |  3   |
-| Day04 |                                          |         |  3   |
-| Day05 |                                          |         |  3   |
-| Day06 |                                          |         |  3   |
-| Day07 |                                          |         |  3   |
-| Day08 |                                          |         |  3   |
-| Day09 |                                          |         |  3   |
-| Day10 |                                          |         |  3   |
-| Day11 |                                          |         |  3   |
-| Day12 |                                          |         |  3   |
-| Day13 |                                          |         |  3   |
-| Day14 |                                          |         |  3   |
-| Day15 |                                          |         |  3   |
-| Day16 |                                          |         |  3   |
-| Day17 |                                          |         |  3   |
-| Day18 |                                          |         |  3   |
-| Day19 |                                          |         |  3   |
-| Day20 |                                          |         |  3   |
+| Date  | Contents                                                     | Pratice |  HR  |
+| :---: | :----------------------------------------------------------- | ------- | :--: |
+| Day01 | [Python Review](./PythonOverview.md) Simply<br />Web App Demonstration<br />Django Quick Tutorial |         |  3   |
+| Day02 | Django Quick Tutorial                                        |         |  3   |
+| Day03 |                                                              |         |  3   |
+| Day04 |                                                              |         |  3   |
+| Day05 |                                                              |         |  3   |
+| Day06 |                                                              |         |  3   |
+| Day07 |                                                              |         |  3   |
+| Day08 |                                                              |         |  3   |
+| Day09 |                                                              |         |  3   |
+| Day10 |                                                              |         |  3   |
+| Day11 |                                                              |         |  3   |
+| Day12 |                                                              |         |  3   |
+| Day13 |                                                              |         |  3   |
+| Day14 |                                                              |         |  3   |
+| Day15 |                                                              |         |  3   |
+| Day16 |                                                              |         |  3   |
+| Day17 |                                                              |         |  3   |
+| Day18 |                                                              |         |  3   |
+| Day19 |                                                              |         |  3   |
+| Day20 |                                                              |         |  3   |
 
 - #### 온라인 자료
 
