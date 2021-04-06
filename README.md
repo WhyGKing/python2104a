@@ -27,7 +27,6 @@ previous: ◀◀ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ here...  &nbsp;&nbsp;&nbsp;&nbs
 
 | Date  | Contents                                                     | Pratice |  HR  |
 | :---: | :----------------------------------------------------------- | ------- | :--: |
-<<<<<<< HEAD
 | Day01 | [Python Review](./PythonOverview.md) Simply<br />Django Quick Tutorial 1 |         |  3   |
 | Day02 | Django Quick Tutorial 2                                      |         |  3   |
 | Day03 | Django Quick Tutorial 3                                      |         |  3   |
