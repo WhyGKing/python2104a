@@ -27,26 +27,26 @@ previous: ◀◀ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ here...  &nbsp;&nbsp;&nbsp;&nbs
 
 | Date  | Contents                                                     | Pratice |  HR  |
 | :---: | :----------------------------------------------------------- | ------- | :--: |
-| Day01 | [Python Review](./PythonOverview.md) Simply<br />Web App Demonstration<br />Django Quick Tutorial |         |  3   |
-| Day02 | Django Quick Tutorial                                        |         |  3   |
-| Day03 |                                                              |         |  3   |
-| Day04 |                                                              |         |  3   |
-| Day05 |                                                              |         |  3   |
-| Day06 |                                                              |         |  3   |
-| Day07 |                                                              |         |  3   |
-| Day08 |                                                              |         |  3   |
-| Day09 |                                                              |         |  3   |
-| Day10 |                                                              |         |  3   |
-| Day11 |                                                              |         |  3   |
-| Day12 |                                                              |         |  3   |
-| Day13 |                                                              |         |  3   |
-| Day14 |                                                              |         |  3   |
-| Day15 |                                                              |         |  3   |
-| Day16 |                                                              |         |  3   |
-| Day17 |                                                              |         |  3   |
-| Day18 |                                                              |         |  3   |
-| Day19 |                                                              |         |  3   |
-| Day20 |                                                              |         |  3   |
+| Day01 | [Python Review](./PythonOverview.md) Simply<br />Django Quick Tutorial 1 |         |  3   |
+| Day02 | Django Quick Tutorial 2                                      |         |  3   |
+| Day03 | Django Quick Tutorial 3                                      |         |  3   |
+| Day04 | Database and SQL                                             |         |  3   |
+| Day05 | html5/css3                                                   |         |  3   |
+| Day06 | Javascript, Bootstrap                                        |         |  3   |
+| Day07 | Bookmark & Memo Application1                                 |         |  3   |
+| Day08 | Bookmark & Memo Application2                                 |         |  3   |
+| Day09 | Bookmark & Memo Application3                                 |         |  3   |
+| Day10 | Blog Application1                                            |         |  3   |
+| Day11 | Blog Application2                                            |         |  3   |
+| Day12 | Blog Application3                                            |         |  3   |
+| Day13 | Data Processing for ML. Crawling & Scraping                  |         |  3   |
+| Day14 | Web Scraping                                                 |         |  3   |
+| Day15 | Data source format and processing                            |         |  3   |
+| Day16 | Machine Learning                                             |         |  3   |
+| Day17 | Deep Learning                                                |         |  3   |
+| Day18 | Text Analysys and Chatbot                                    |         |  3   |
+| Day19 | Chatbot Application1                                         |         |  3   |
+| Day20 | Chatbot Application2                                         |         |  3   |
 
 - #### 온라인 자료
 
@@ -55,6 +55,7 @@ previous: ◀◀ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ here...  &nbsp;&nbsp;&nbsp;&nbs
 3. [Python for Programmers](https://wiki.python.org/moin/BeginnersGuide/Programmers)
 4. [Python Documents(English)](https://docs.python.org/3/)
 5. [파이썬 설명서(한글)](https://docs.python.org/ko/3.9/contents.html)
+6. [Django Tutorial(한글PDF)](.reference/Django317_Tutorial.pdf)
 
 - #### 노트
 
