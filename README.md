@@ -55,7 +55,7 @@ previous: ◀◀ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ here...  &nbsp;&nbsp;&nbsp;&nbs
 3. [Python for Programmers](https://wiki.python.org/moin/BeginnersGuide/Programmers)
 4. [Python Documents(English)](https://docs.python.org/3/)
 5. [파이썬 설명서(한글)](https://docs.python.org/ko/3.9/contents.html)
-6. [Django Tutorial(한글PDF)](.reference/Django317_Tutorial.pdf)
+6. [Django Tutorial(한글PDF)](./reference/Django317_Tutorial.pdf)
 
 - #### 노트
 
