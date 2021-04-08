@@ -1,0 +1,455 @@
+> : windows prompt       >> : python prompt
+
+=============
+튜토리얼 Part 1
+=============
+
+Step 1. Configuration
+django 설치 확인
+> python -m django --version
+
+Step 2. Create Project
+> cd 저장용폴더
+> django-admin startproject mysite
+서버 실행 후 확인
+> python manage.py runserver
+브라우저 주소창 http://127.0.0.1:8000
+
+Step 3. Create App
+> python manage.py startapp polls
+
+첫번째 뷰 작성
+> notepad polls/views.py
+from django.http import HttpResponse
+def index(request):
+    return HttpResponse("Hello, world. You're at the polls index.")
+
+뷰 호출을 위한 URLconf 생성
+> notepad polls/urls.py
+from django.urls import path
+from . import views
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+
+최상위 URLconf에 app URLconf정보 추가
+> notepad mysite/urls.py
+from django.contrib import admin
+from django.urls import include, path
+urlpatterns = [
+    path('polls/', include('polls.urls')),
+    path('admin/', admin.site.urls),
+]
+
+서버 실행 후 확인
+> python manage.py runserver
+브라우저 주소창 http://localhost:8000/polls
+
+=============
+튜토리얼 Part 2
+=============
+Step 1. 데이터베이스 설치(SQLite 사용시 생략)
+
+Step 2. 데이터베이스 테이블 생성
+> python manage.py migrate
+
+Step 3. 모델 만들기
+> notepad polls/models.py
+from django.db import models
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('date published')
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+
+Step 4. 모델 활성화
+현재 앱, 프로젝트에 추가
+> notepad mysite/settings.py
+INSTALLED_APPS = [
+    'polls.apps.PollsConfig',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+
+모델변경(또는 신규생성)사항을 migration으로 저장
+> python manage.py makemigrations polls
+
+migration이 내부적으로 실행시킬 SQL문장 확인(생략가능)
+> python manage.py sqlmigrate polls 0001
+
+migrate 실행, 데이터베이스에 모델과 관련된 테이블 생성
+> python manage.py migrate
+
+Step 5. API 이용, 테이블 조작해보기
+> pyton manage.py shell
+>>> from polls.models import Choice, Question   #모델 클래스 import
+>>> Question.objects.all() #시스템에 아직 작성된 질문 없음
+>>> from djago.utils import timezone  #시간처리를 위해 timezone import
+# Question Class의 생성자를 이용, 객체를 생성하고 이를 q로 참조
+>>> q = Question(question_text="What's new?", pub_date=timezone.now())
+# Save the object into the database. save()메서드 호출
+>>> q.save()
+# 객체의 속성명 이용, 객체 속성 값을 액세스
+>>> q.question_text
+>>> q.pub_date
+# 객체 속성 값 변경하고 저장하기
+>>> q.question_text = "What's your address?"
+>>> q.save()
+# 데이터베이스에 저장된 Question 객체 모두 display
+>>> Question.objects.all()
+
+# 디스플레이된 결과를 보면 Question 객체가 숫자로 표현되어 있음. 이를 개선하기 위해 Question 모델 수정, 
+# __str__() 메소드를 Question과 Choice에 추가
+# python shell에서 빠지기
+>>> quit()
+
+윈도우 프롬프트에서, models.py 파일 편집, 최근 추가된 질문여부를 확인하는 메서드도 함께 추가함.
+> notepad polls.py
+from django.db import models
+class Question(models.Model):
+    # ...
+    def __str__(self):
+        return self.question_text
+    def was_published_recently(self):
+        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+class Choice(models.Model):
+    # ...
+    def __str__(self):
+        return self.choice_text
+
+변경된 사항 저장, 다시 python shell 실행
+> python manage.py shell
+>> from polls.models import Choice, Question
+>> Question.objects.all()
+# 출력되는 Question 정보가 숫자가 아닌 필드값으로 출력되는 것을 확인할 수 있다.
+# API를 이용, 키워드를 통한 검색도 해보자
+>> Question.objects.filter(id=1)
+>> Question.objects.filter(question_text__startswith='What')
+# 추가된 연도가 금년인 질문을 검색해보자
+>> from django.utils import timezone
+>> current_year = timezone.now().year
+>> Question.objects.get(pub_date__year=current_year)
+# 이제 존재하지 않는 객체를 검색해보자
+>> Question.objects.get(id=1000)
+# primary key를 이용한 검색을 해보자
+>> Question.objects.get(pk=1)
+# 새롭게 추가한 1일내 추가 확인 메서드 동작을 확인해보자
+>> q=Question.objects.get(pk=1)
+>> q.was_published_recently()
+
+# 한 질문에 대해 다수의 답이 존재할 수 있다. 질문지 하나에 대해 choice object를 생성해보자
+# primary key가 1인 질문지를 대상으로 작업을 진행해보자.
+>> q = Question.objects.get(pk=1)
+# 현재 질문객체와 관계딘 답변들을 모두 조회해보자.
+>> q.choice_set.all()
+# 세개의 응답을 만들어 보자.
+>> q.choice_set.create(choice_text='상당구', votes=0)
+>> q.choice_set.create(choice_text='흥덕구', votes=0)
+>> c = q.choice_set.create(choice_text='Just test', votes=0)
+# choice 객체와 연계된 질문 객체를 조회해보자
+>> c.question
+# question 객체도 choice객체에 접근할 수 있다.
+>> q.choice_set.all()
+>> q.choice_set.count()
+# question 객체의 속성정보를 이용하여 choice객체를 검색해보자
+>> Choice.object.filter(question__pub_date__year=cureent_year)
+# delete() 메서드를 이용하여 답변 중 하나를 삭제해보자
+>> c = q.choice_set.filter(choice_text__startwith='Just')
+>> c.delete()
+다음 단계 진행을 위해 shell을 종료하자
+>>exit()
+
+
+Step 6. 사이트 관리자
+관리자 생성하기 
+> python manage.py createsuperuser
+
+관리자명을 입력하고, 이메일주소, 패스워드 및 패스워드확인을 입력한다. 
+학습용으로는 가능한 단순하게 입력하도록 하자...
+
+관리자를 만들었으며, 관리자 페이지를 열어보자
+> python manage.py runserver
+브라우저 주소창에 http://localhost:8000/admin/
+
+생성한 관리자 아이디와 비밀번호를 이용, 관리자 사이트에 들어가 보자.
+
+관리자 사이트에 poll app 정보를 등록하여 관리할 수 있도록 하자.
+이를 위해서는 polls 디렉토리에 있는 admin.py 파일에 Qeustion 클래스를 등록하여야 한다.
+> notepad polls/admin.py
+from django.contrib import admin
+from .models import Question
+admin.site.register(Question)
+
+이제 Question을 등록하였으니, 관리자 사이트 페이지를 새로고침해보자.
+관리 인덱스 페이지에 Questions가 표시될 것이다. 클릭해보면 리스트로 이동하고 등록된 질문들을
+확인할 수 있다.
+
+
+==============
+튜토리얼 Part 3
+==============
+polls 애플리케이션에 4개의 view를 만들어 볼 것이다.
+index view  : 최근의 질문들을 표시
+detail view  : 질문 내용과, 투표 서식 표시
+result view  : 특정 질문에 대한 결과 표시
+vote  : 특정 질문에 특정 선택을 할 수 있는 투표 기능 제공
+
+Step 1. View 추가하기
+> notepad polls/views.py  
+#를 실행하고 다음의 내용을 추가한다.
+def detail(request, question_id):
+    return HttpResponse("You're looking at question %s." % question_id)
+
+def results(request, question_id):
+    response = "You're looking at the results of question %s."
+    return HttpResponse(response % question_id)
+
+def vote(request, question_id):
+    return HttpResponse("You're voting on question %s." % question_id)
+
+
+추가된 새로운 view를 polls.urls 모듈로 연결
+> notepad polls/urls.py
+from django.urls import path
+from . import views
+urlpatterns = [
+    # ex: /polls/
+    path('', views.index, name='index'),
+    # ex: /polls/5/
+    path('<int:question_id>/', views.detail, name='detail'),
+    # ex: /polls/5/results/
+    path('<int:question_id>/results/', views.results, name='results'),
+    # ex: /polls/5/vote/
+    path('<int:question_id>/vote/', views.vote, name='vote'),
+]
+
+브라우저에 http://localhost:8000/polls/100/ 을 입력해보면 detail() 메서드를 호출하여 입력한 id가 출력되는 것을 확인할 수 있다. .../polls/100/results와 .../polls/100/vote 도 실행해보자.
+
+Step 2. View가 실제 동작하도록 만들기
+> notepad polls/views.py
+from django.http import HttpResponse
+from .models import Question
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    output = ', '.join([q.question_text for q in latest_question_list])
+    return HttpResponse(output)
+# Leave the rest of the views (detail, results, vote) unchanged
+
+이제 뷰가 참고할 template용 디렉토리를 만들어 준다.
+> mkdir polls\templates\polls
+> notepad polls/templates/polls/index.html
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+
+이제 템플릿을 이용할 수 있도록 polls/views.py 파일을 수정해준다.
+> notepad polls/views.py
+from django.http import HttpResponse
+from django.template import loader
+from .models import Question
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('polls/index.html')
+    context = {
+        'latest_question_list': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+템플릿에 context를 채워 표현한 결과를 HttpResponse 객체와 함께 돌려주는 구문은 자주 쓰는 용법.
+이런 표현을 쉽게 표현할 수 있도록 단축기능을 제공. index()뷰를 단축기능으로 작성해보자.
+> notepad polls/views.py
+from django.shortcuts import render
+from .models import Question
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    context = {'latest_question_list': latest_question_list}
+    return render(request, 'polls/index.html', context)
+
+Step 3. 404에러 발생시키기
+질문의 detail뷰에 오류를 발생시켜보자.
+> notepad polls/views.py
+from django.http import Http404
+from django.shortcuts import render
+from .models import Question
+# ...
+def detail(request, question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render(request, 'polls/detail.html', {'question': question})
+
+요청된 질문의 id가 없을 경우 Http404 예외 발생...
+
+> notepad polls/templates/polls/detail.html
+{{ question }}
+
+다른 방법도 알아보자. 객체가 존재하지 않을 때 get()을 사용하여 Http404예외 발생시키는 것은 자주 사용.
+이 기능에 대한 단축기능 제공. 
+detail()뷰를 단축 기능으로 작성해보자.
+>notepad polls/views.py
+from django.shortcuts import get_object_or_404, render
+from .models import Question
+# ...
+def detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/detail.html', {'question': question})
+
+
+Step 4. 템플릿 시스템 사용하기
+detail()뷰로 되돌아가 보자. context변수 question이 주어졌을 때, polls/detail.html 템플릿이
+어떻게 보이는지 확인하자.
+> notepad polls/templates/polls/detail.html
+<h1>{{ question.question_text }}</h1>
+<ul>
+{% for choice in question.choice_set.all %}
+    <li>{{ choice.choice_text }}</li>
+{% endfor %}
+</ul>
+
+템플싯에서 하드코딩된 URL제거하기
+>notepad polls/index.html
+<li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+를... 아래와 같이 수정
+<li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+
+Step 5. URL의 이름공간 정하기
+> notepad polls/urls.py
+from django.urls import path
+from . import views
+app_name = 'polls'
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('<int:question_id>/', views.detail, name='detail'),
+    path('<int:question_id>/results/', views.results, name='results'),
+    path('<int:question_id>/vote/', views.vote, name='vote'),
+]
+
+이제, polls/index.html 템플릿의 기존 내용을 변경하자.
+>notepad polls/templates/polls/index.html
+<li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+
+==============
+튜토리얼 Part 4
+==============
+Step 1. 간단한 form 작성하기
+템플릿 polls/detail.html을 수정하여, form요소를 추가하자.
+> notepad polls/templates/polls/detail.html
+<h1>{{ question.question_text }}</h1>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<form action="{% url 'polls:vote' question.id %}" method="post">
+{% csrf_token %}
+{% for choice in question.choice_set.all %}
+    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id
+}}">
+    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+{% endfor %}
+<input type="submit" value="Vote">
+</form>
+
+뷰 수정하기(제출된 데이터를 처리하고 그 데이터로 무엇인가를 수행하는)
+> notepad polls/urls.py
+path('<int:question_id>/vote/', views.vote, name='vote'),
+
+추가로, vote()함수를 구현
+> notepad polls/views.py
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from .models import Choice, Question
+# ...
+def vote(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        # Redisplay the question voting form.
+        return render(request, 'polls/detail.html', {
+            'question': question,
+            'error_message': "You didn't select a choice.",
+        })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        # Always return an HttpResponseRedirect after successfully dealing
+        # with POST data. This prevents data from being posted twice if a
+        # user hits the Back button.
+        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+
+설문조사 후 vote()뷰는 설문조사 결과 페이지로 리다이렉트되어야 함. 그 뷰를 작성하자.
+>notepad polls/views.py
+from django.shortcuts import get_object_or_404, render
+def results(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/results.html', {'question': question})
+
+이제 results.html템플릿을 구성하자.
+> notepad polls/templates/polls/results.html
+<h1>{{ question.question_text }}</h1>
+<ul>
+{% for choice in question.choice_set.all %}
+    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize
+}}</li>
+{% endfor %}
+</ul>
+<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+
+이제 웹르라우저에서 /pools/1/페이지로 가서 투표를 해보자.
+
+
+Step 2. Generic View 사용하기
+간단한 코드 구성을 위해 제너릭 뷰를 사용하낟.
+이를 위해..
+URLConf를 수정하고 불필요한 오래된 뷰 중 일부 삭젝, 제너릭 뷰 기반 새로운 뷰 도입
+
+URLconf 수정
+>notepad polls/urls.py
+from django.urls import path
+from . import views
+app_name = 'polls'
+urlpatterns = [
+    path('', views.IndexView.as_view(), name='index'),
+    path('<int:pk>/', views.DetailView.as_view(), name='detail'),
+    path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
+    path('<int:question_id>/vote/', views.vote, name='vote'),
+]
+
+views 수정
+>notepad polls/views.py
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.views import generic
+from .models import Choice, Question
+class IndexView(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = 'latest_question_list'
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
+
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = 'polls/detail.html'
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/results.html'
+
+def vote(request, question_id):
+... # same as above, no changes needed.
+
