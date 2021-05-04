@@ -243,7 +243,7 @@ else:
 - 파이썬의 표준 모듈로써 URL을 다루기 위한 모듈 패키지
 - 설치가 필요하지 않고, import urllib로 활용
 - requests 모듈과 마찬가지로 URL과 관련된 여러가지 기능들을 제공
-- https://docs.python.org/3/urllib.html
+- https://docs.python.org/ko/3/library/urllib.html
 
 ### 4가지의 하위 모듈 
 - request : url을 열고 읽기 위한 모듈(http요청).  https://docs.python.org/ko/3.10/library/urllib.request.html
