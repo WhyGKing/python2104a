@@ -850,9 +850,9 @@ driver.get('https://www.naver.com')
 element = driver.find_element_by_class_name("link_login")
 element.click()
 # 로그인 페이지가 뜨면 로그인 정보 입력
-id = 'mail2sjlee'
+id = 'yourid'
 #pw = 'password'
-pw = 'gyj9901^$'
+pw = 'yourpassword'
 
 #*******************************
 driver.execute_script("document.getElementById('id').value=\'" + id +"\'")
