@@ -243,7 +243,7 @@ else:
 - 파이썬의 표준 모듈로써 URL을 다루기 위한 모듈 패키지
 - 설치가 필요하지 않고, import urllib로 활용
 - requests 모듈과 마찬가지로 URL과 관련된 여러가지 기능들을 제공
-- https://docs.python.org/ko/3/library/urllib.html
+- https://docs.python.org/3/urllib.html
 
 ### 4가지의 하위 모듈 
 - request : url을 열고 읽기 위한 모듈(http요청).  https://docs.python.org/ko/3.10/library/urllib.request.html
@@ -538,7 +538,7 @@ text_data = byte_data.decode()
 print(text_data)
 ```
 
-# BeautifulSoup 모듈
+# 3. BeautifulSoup 모듈
 - 홈페이지 내 데이터를 쉽게 추출할 수 있도록 도와주는 파이썬 외부 라이브러리
 - 웹 문서 내 수많은 HTML 태그들을 parser를 활용해 사용하기 편한 파이썬 객체로 만들어 제공
 - 웹 문서 구조를 알고 있다면, 아주 편하게 원하는 데이터를 뽑아 활용할 수 있음
@@ -647,56 +647,128 @@ for i in result_small:
 print(head_news_list)
 ```
 
-## Selenium
+# 4. Selenium 모듈
+- python으로 크롤링할 때 크롤링 대상인 웹 페이지에 동적인 동작과 함께 크롤링 하기 위해 필요한 라이브러리 모듈.
+- 웹 어플리케이션 테스트를 위한 프레임워크(제작한 홈페이지를 테스트하기 위해 사용)
+- 다양한 언어에서 지원하며(C++, JAVA, Python 등) 사용자가 아닌 프로그램이 웹 브라우저를 제어할 수 있도록 지원
+- 웹 브라우저마다 클라이언트 프로그램(Web Driver)이 별도로 필요(웹브라우저 - 프로그램간 통신 목적)
+- 크롤링보다는 웹을 제어하는 목적이 더 큼
+
+### selenium의 장점
+- 웹 드라이버를 사용해서 웹 페이지를 동적으로 크롤링할 수 있다. 크롤링 결과 특정 html 엘리먼트에 마우스 클릭을 발생시키거나, input 엘리먼트에 텍스트를 채워넣기 등이 가능하다.
 
 
+## Selenium 설치(Windows 10기준)
+
+### Selenium 설치 명령어 
 ```python
-# 설치하기
-# !pip install selenium
-
+pip install selenium  # pip로 설치하는 방법
+!pip install selenium  # jupyter notebook cell 상태에서 설치하기
 ```
+### Chrom Web Driver 설치
+브라우저 주소창에 https://chromedriver.chromium.org/downloads 를 입력하고 다운로드 페이지를 연다.  
+플랫폼과 크롬 버전에 맞는 버전을 선택하여 다운로드 한다. 윈도우즈 버전의 경우 win32만 있으나 64머신에서도 아무 문제 없이 잘 동작한다.  
+크롬 버전은 크롬 브라우저의 도움말 > Chrome정보를 통해 확인할 수 있다.  
+
+
+## Selenium 모듈 활용
+### HTML로 접근하기
+- BeautifulSoup 모듈과 비슷하게 HTML문서의 구조에 따라 접근할 수 있음
+- BeautifulSoupㅇ서 원하는 태그, 속성 등을 가져오기 위해 단일 객체는 find(), 복수 객체는 find_all()함수로 접근햇다면, selenium에서는 태그 종류에 따라 각각 함수가 있음
+- 단일객체 
+  - find_element_by_id()
+  - find_element_by_css_selector()
+  - find_element_y_class_name()
+  - ...
+- 복수객체(리스트 형태)
+  - find_elements_by_class_name()
+  - find_elements_by_xpath()
+  - find_elements_by_tag_name()
+  - ...
+
+- 원하는 데이터의 태그를 쉽게 검색하려면 브라우저에서 마우스 우클릭 > 검사 선택 > 원하는 데이터로 마우스 이동
+
+  
 
 
 ```python
-#  셀레니움 web driver 설치
-# 크롭 웹드라이버 : https://chromedriver.chromium.org/downloads
+#
+#  셀레니움 web driver 설치가 완료되었다면 간단한 selenium 크롤링 코드를 작성해보자.
 # 
 import selenium
 from selenium import webdriver
+# selenium에서 사용할 웹 드라이버의 절대 경로
 path = "C:/Users/dears/chromedriver/chromedriver.exe"
+
+# selennium의 webdriver에 앞서 설치한 crhonedriver를 연동한다.
 driver = webdriver.Chrome(path)
+
+# driver로 특정 페이지를 크롤링한다.
 driver.get('https://www.naver.com')
+
+print("="*100)
+print(driver.title)   # 크롤링한 페이지의 title 정보
+print(driver.current_url)  # 현재 크롤링된 페이지의 url
+print("네이버 홈페이지 크롤링")
+print("위의 특정 페이지가 크롬의 별도 탭에서 열리고, 'Chrome이 자동화된 테스트 소프트웨어에 의해 제어되고 있습니다' 메시지 출력...")
+print("="*100)
 ```
 
 
 ```python
-element = driver.find_element_by_id("themecast")
+#HTML로 접근하기 : find_element_by_id()  : 원격으로 브라우저를 열고 해당 id의 정보를 가져온다.
+element = driver.find_element_by_id("account")
 print(element)
+print(element.tag_name)
+print(element.text)
 ```
 
 
 ```python
-element = driver.find_element_by_class_name("sc_newscast")
+#HTML로 접근하기 : find_element_by_class_name()  : 원격으로 브라우저를 열고 해당 class의 정보를 가져온다.
+element = driver.find_element_by_class_name("eg-flick-panel") # 날씨 플리커 찾아서 내용 출력하기
 print(element)
+print(element.tag_name)
+print(element.text)
 ```
+
+### 이벤트로 제어하기
+selenium은 브라우저를 직접 제어하기 때문에 마치 사람이 직접 컨트롤하듯이 마우스 클릭, 키보드 입력, 자바 스크립트 등 이벤트 처리를 할 수 있다.
+- 마우스 클릭 : click()
+- 키보드 입력 : send_keys()
+- 자바스크립트 삽입: execute_script()
+- 입력 양식 전송 : submit()
+- 스크린샷 : screenshot(파일이름)
+- 글자 지움 : clear()
+- 뒤로 가기 : back()
+- 앞으로 가기 : forwar()
 
 
 ```python
-element = driver.find_element_by_class_name("nav") # 지도 찾아서 클릭해보기
+# 날씨 플리커를 찾아서 클릭해보자.
+element = driver.find_element_by_class_name("eg-flick-panel") # 날씨 플리커 클릭해보기
 print(element)
 element.click()
 ```
 
 
 ```python
+# 네이버의 검색창 id는 query
+# 검색창을 찾아 검색어로 웹크롤링 입력
 element = driver.find_element_by_id("query")
 print(element)
+print(element.tag_name)
 element.send_keys("웹크롤링")
+# element.send_keys(Keys.ENTER) # 특수 키 입력 가능..
+# 특수키를 입력하려면 
+# from selenium.webdriver.common.keys import Keys
+# 를 먼저 import 해야 한다.
+# 보통은 특수키보다는 클릭 버튼을 찾아서 클릭이벤트로 처리함.
 ```
 
 
 ```python
-#셀레이움 모듈을 활용하여 네이버 메인 페이지에서 사전 바로가기 링크를 클릭한 뒤, 
+#셀레니움 모듈을 활용하여 네이버 메인 페이지에서 사전 바로가기 링크를 클릭한 뒤, 
 # 사전 페이지에서 파이썬 검색어를 입력 및 검색한 결과를 브라우저로 띄우는 코드를 작성하세요.
 import selenium
 from selenium import webdriver
@@ -705,7 +777,15 @@ path = "C:/Users/dears/chromedriver/chromedriver.exe"
 driver = webdriver.Chrome(path)
 driver.get('https://www.naver.com')
 
-element = driver.find_element_by_class_name("mn_dic")
+#id, 또는 클래스이름으로 검색이 어려운 엘리먼트는 xpath로 요소를 지정할 수 있다.
+# 개발자 도구 화면에서 요소 선택 버튼을 누른 후, 버튼 요소를 선택한다. 
+# 버튼의 요소를 찾았으면, 요소 선택 후 마우스 우클리갛여 복사할 방법을 선택하는데 
+# 복사 옵션을 xpath로 선택한다.
+# 이때 주의할 점은 큰따옴표를 작은 따옴표로 바꾸고 사용토록 한다.
+#element = driver.find_element_by_class_name("mn_dic")
+element = driver.find_element_by_xpath("//*[@id='NM_FAVORITE']/div[1]/ul[2]/li[1]/a")  # xpath로 복사한 것
+
+
 print(element)
 
 element.click()
@@ -738,11 +818,14 @@ for child in contents.children:
 ```python
 img_tag = contents.find('img')
 print(img_tag)
-print(img_tag.parent)
+print(img_tag.parent) # 바로 위 부모 노드를 출력함...
+print("=")
+print(img_tag.find_parent('div')) # 특정 부모 노드까지 검색해서 올라감
 ```
 
 
 ```python
+# 연습용 페이지 구조를 전제로 함....
 #find_next_sibling() 바로 다음 형제 노드를 검색
 #find_next_siblings() 모든 형제노드를 검색
 #find_previous_sibling()
@@ -755,7 +838,7 @@ html = req.text
 soup = BeautifulSoup(html, 'html.parser')
 contetns = soup.find('body')
 
-p_tag = bs.find("p", class_="b")
+p_tag = bs.find("p", class_ ="b")
 print(p_tag)
 
 print(p_tag.find_next_sibling())
@@ -793,7 +876,6 @@ logbtn = driver.find_element_by_id("log.login")
 logbtn.click()
 # 자동 로그인 방지를 위한 capchar 적용
 # 자동화된 크롤러 구성에 불편함
-
 ```
 
 
@@ -839,20 +921,22 @@ logbtn.click()
 
 # 실습
 # s을 활용한 네이버 로그인 및 메일 탭 클릭
+from bs4 import BeautifulSoup
 import selenium
 import time
 from selenium import webdriver
 
 path = "C:/Users/dears/chromedriver/chromedriver.exe"
 driver = webdriver.Chrome(path)
-driver.get('https://www.naver.com')
+driver.get('https://mail.naver.com')
 
-element = driver.find_element_by_class_name("link_login")
-element.click()
+# 메일 페이지로 직접 연결하면 아래 생략
+#element = driver.find_element_by_class_name("link_login")
+#element.click()
 # 로그인 페이지가 뜨면 로그인 정보 입력
 id = 'yourid'
-#pw = 'password'
 pw = 'yourpassword'
+
 
 #*******************************
 driver.execute_script("document.getElementById('id').value=\'" + id +"\'")
@@ -867,14 +951,27 @@ logbtn.click()
 # element = driver.find_element_by_class_name('btn_global')# 클래스네임 미확인
 # element.click()
 # time.sleep(1)
-element = driver.find_element_by_class_name('tab MY_TAB_MAIL')
-element.click()
+# 새로운 기기 로그인....
+# 등록 버튼 클릭하고 가기
+# element = driver.find_element_by_xpath("//*[@id='new.save']")
+# element.click()
+# time.sleep(1)
+
+
+# 로그인 최종 성공 후 페이지에서 메일링크 찾아서 클릭하기 
+#element = driver.find_element_by_class_name('tab MY_TAB_MAIL')
+# element = driver.find_element_by_xpath("/html/body/div/div/div[1]/div[1]/div/div[2]/a[1]")
+# element.click()
+
+# 버튼 찾기가 안되어서... ㅋㅋㅋ
+# 메일 페이지로 직접 연결 
+#driver.get('https://mail.naver.com')
 
 ## 메일함 소스 가져오기
 page_source = driver.page_source
 soup = BeautifulSoup(page_source, "html.parser")    # 셀레니움과 BS 의 연결
 # print(soup)
-mail_list = soup.select("div.mTitle")
+mail_list = soup.select("div.subject")
 cnt = 1
 for i in mail_list:
     print(cnt)
